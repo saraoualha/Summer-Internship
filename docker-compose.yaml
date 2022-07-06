@@ -1,0 +1,25 @@
+version: "3.8"
+services: 
+    client:
+      container_name: client_container
+      build: ./client
+      ports:
+        - 4000:3000
+      volumes:
+        - ./client:/client
+      
+    server:
+      container_name: server_container
+      build: ./server
+      ports:
+        - 4001:3001
+      volumes:
+        - ./server:/server
+      environment:
+        DB_URL: mongodb+srv://internship:internship123@cluster0.dkzkg.mongodb.net/?retryWrites=true&w=majority
+# services:
+#   mongodb:
+#     image: "mongo"
+#     volumes:
+#       - data:/data/db
+#   backend: 
