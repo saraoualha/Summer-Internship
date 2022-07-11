@@ -5,7 +5,9 @@
   "main": "index.js",
   "type": "module",
   "scripts": {
-    "start": "nodemon index.js"
+    "start": "nodemon index.js",
+    "dev": "nodemon -L index.js",
+    "docker:build": "docker build -f ./docker/Dockerfile . "
   },
   "keywords": [],
   "author": "",
