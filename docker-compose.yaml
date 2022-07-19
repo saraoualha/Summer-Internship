@@ -35,7 +35,6 @@ services:
            environment:
              - MONGO_URL=mongodb://db:27017
              - CLIENT=http://localhost:3000
-           #command: /usr/app/node_modules/.bin/nodemon -L src/index.js
 
        db:
          image: mongo:3.6.19-xenial
@@ -52,27 +51,3 @@ networks:
 volumes:
    mongo-data:
      driver: local
-    #  client:
-    #    container_name: client_container
-    #    build: ./client
-    #    ports:
-    #      - 4000:3000
-    #    volumes:
-    #      - ./client:/client
-      
-    #  server:
-    #    container_name: server_container
-    #    build: ./server
-    #    ports:
-    #      - 4001:3001
-    #    volumes:
-    #      - ./server:/server
-    #    environment:
-    #      DB_URL: mongodb+srv://internship:internship123@cluster0.dkzkg.mongodb.net/?retryWrites=true&w=majority
-      
-# services:
-#   mongodb:
-#     image: "mongo"
-#     volumes:
-#       - data:/data/db
-#   backend: 
