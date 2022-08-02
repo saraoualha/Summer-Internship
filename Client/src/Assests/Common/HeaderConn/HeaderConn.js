@@ -1,5 +1,3 @@
-
-
 import * as React from 'react';
 import { Link } from 'react-router-dom'
 import AppBar from '@mui/material/AppBar';
@@ -8,69 +6,37 @@ import Toolbar from '@mui/material/Toolbar';
 import IconButton from '@mui/material/IconButton';
 import Typography from '@mui/material/Typography';
 import Menu from '@mui/material/Menu';
-//import MenuIcon from '@mui/icons-material/Menu';
 import Container from '@mui/material/Container';
 import MenuItem from '@mui/material/MenuItem';
 import Avatar from '@mui/material/Avatar';
 import Tooltip from '@mui/material/Tooltip';
 import NotificationsIcon from '@mui/icons-material/Notifications';
-//import NotificationsIcon from '@mui/icons-material/Notifications';
 import Badge from '@mui/material/Badge';
 import { styled, alpha } from '@mui/material/styles';
 import InputBase from '@mui/material/InputBase';
-import SearchIcon from '@mui/icons-material/Search';
+import NotificationBadge from "react-notification-badge";
+import { Effect } from "react-notification-badge";
 
-import './HeaderConn.css'
 
-//import AdbIcon from '@mui/icons-material/Adb';
+import {
+    MenuButton,
+    MenuDivider,
+    MenuList,
+} from "@chakra-ui/menu";
+import { BellIcon, ChevronDownIcon } from "@chakra-ui/icons";
 
-const pages = ['Home', 'Features'];
-const settings = ['Profile', 'VideoCall', 'Plan event', 'Logout'];
 
-const Search = styled('div')(({ theme }) => ({
-    position: 'relative',
-    borderRadius: theme.shape.borderRadius,
-    backgroundColor: alpha(theme.palette.common.white, 0.15),
-    '&:hover': {
-        backgroundColor: alpha(theme.palette.common.white, 0.25),
-    },
-    marginLeft: 30,
-    width: '100%',
-    [theme.breakpoints.up('sm')]: {
-        marginLeft: theme.spacing(1),
-        width: 'auto',
-    },
-}));
+import './HeaderConn.css';
+import { ChatState } from '../../../Context/ChatProvider';
+import ProfileModel from '../../../components/ProfileModel/ProfileModel';
 
-const SearchIconWrapper = styled('div')(({ theme }) => ({
-    padding: theme.spacing(0, 2),
-    height: '100%',
-    position: 'absolute',
-    pointerEvents: 'none',
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center',
-}));
-
-const StyledInputBase = styled(InputBase)(({ theme }) => ({
-    color: 'inherit',
-    '& .MuiInputBase-input': {
-        padding: theme.spacing(1, 1, 1, 0),
-        // vertical padding + font size from searchIcon
-        paddingLeft: `calc(1em + ${theme.spacing(4)})`,
-        transition: theme.transitions.create('width'),
-        width: '100%',
-        [theme.breakpoints.up('sm')]: {
-            width: '12ch',
-            '&:focus': {
-                width: '20ch',
-            },
-        },
-    },
-}));
+import logo from '../../logo.png'
+import SideBar from '../../../components/Homepage/ChatCompo/SideBar';
+import NotificationModel from './NotificationModel'
 
 
 const HeaderConn = () => {
+    /************************************************************************* */
     const [anchorElNav, setAnchorElNav] = React.useState(null);
     const [anchorElUser, setAnchorElUser] = React.useState(null);
 
@@ -88,17 +54,36 @@ const HeaderConn = () => {
     const handleCloseUserMenu = () => {
         setAnchorElUser(null);
     };
+    /*************************************************************************** */
+
+    const [search, setSearch] = React.useState('');
+    const [searchResult, setSearchResault] = React.useState([]);
+    const [loadingChat, setLoadingChat] = React.useState();
+    const { user, notification, setNotification, setSelectedChat } = ChatState();
+    const userInfo = JSON.parse(localStorage.getItem("userInfo"));
+
+
+
 
     return (
-        <AppBar position="static" style={{ backgroundColor: '#023C59' }} >
+        <AppBar title={<img src="..\Assests\logo-removebg-preview.png" alt="" />} position="static" style={{ backgroundColor: '#023C59' }} >
             <Container maxWidth="xl">
                 <Toolbar disableGutters>
 
+                    <Box
+
+                        component="img"
+                        sx={{
+                            height: 64,
+
+                        }}
+                        alt="CU"
+                        src={logo}
+                    />
                     <Typography
                         variant="h6"
                         noWrap
                         component="a"
-                        href="/"
                         sx={{
                             mr: 2,
                             display: { xs: 'none', md: 'flex' },
@@ -112,16 +97,6 @@ const HeaderConn = () => {
                     >
                         ChatUp
                     </Typography>
-                    <Search style={{ marginLeft: '50px' }}>
-                        <SearchIconWrapper>
-                            <SearchIcon />
-                        </SearchIconWrapper>
-                        <StyledInputBase
-                            placeholder="Search…"
-                            inputProps={{ 'aria-label': 'search' }}
-                        />
-                    </Search>
-
                     <Box sx={{ flexGrow: 1, display: { xs: 'flex', md: 'none' } }}>
                         <IconButton
                             size="large"
@@ -151,11 +126,6 @@ const HeaderConn = () => {
                                 display: { xs: 'block', md: 'none' },
                             }}
                         >
-                            {/* {pages.map((page) => (
-                <MenuItem key={page} onClick={handleCloseNavMenu}>
-                  <Typography textAlign="center">{page}</Typography>
-                </MenuItem>
-              ))} */}
                         </Menu>
                     </Box>
 
@@ -183,18 +153,19 @@ const HeaderConn = () => {
                     </Box>
                     <Box sx={{ flexGrow: 0 }}>
 
-                        <IconButton
-                            size="large"
-                            aria-label="show 17 new notifications"
-                            color="inherit"
-                        >
-                            <Badge color="error">
-                                <NotificationsIcon />
-                            </Badge>
-                        </IconButton>
-                        <Tooltip title="Open settings">
+                        <SideBar />
+                        {/* <NotificationModel>
+                            <NotificationBadge
+                                count={notification.length}
+                                effect={Effect.SCALE}
+                            />
+                            <BellIcon fontSize="2xl" m={1} />
+                        </NotificationModel> */}
+
+
+                        <Tooltip title='Click for settings '>
                             <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
-                                <Avatar alt="Remy Sharp" src="/static/images/avatar/2.jpg" />
+                                <Avatar alt={userInfo.name} src={userInfo.pic} />
                             </IconButton>
                         </Tooltip>
                         <Menu
@@ -213,18 +184,27 @@ const HeaderConn = () => {
                             open={Boolean(anchorElUser)}
                             onClose={handleCloseUserMenu}
                         >
-                            {settings.map((setting) => (
-                                <MenuItem key={setting} onClick={handleCloseUserMenu}>
-                                    <Link className='link' to={`/${setting}`}><Typography textAlign="center">{setting}</Typography></Link>
+                            <ProfileModel user={user}>
+                                <MenuItem onClick={handleCloseUserMenu}>
+                                    <Typography type='button' textAlign="center" data-bs-toggle="modal" data-bs-target="#exampleModal" >Profile</Typography>
                                 </MenuItem>
-                            ))}
+                            </ProfileModel>
+                            <MenuItem onClick={handleCloseUserMenu}>
+                                <Link className='link' to={`/`}><Typography textAlign="center">VideoCall</Typography></Link>
+                            </MenuItem>
+                            <MenuItem onClick={handleCloseUserMenu}>
+                                <Link className='link' to={`/`}><Typography textAlign="center">Plan Event</Typography></Link>
+                            </MenuItem>
+                            <MenuItem onClick={(e) => { handleCloseUserMenu(); localStorage.clear() }}>
+                                <Link className='link' to={`/`}><Typography textAlign="center">Logout</Typography></Link>
+                            </MenuItem>
                         </Menu>
                     </Box>
 
                 </Toolbar>
+
             </Container>
         </AppBar>
     );
 };
 export default HeaderConn;
-

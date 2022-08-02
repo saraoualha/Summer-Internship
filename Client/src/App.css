@@ -1,4 +1,4 @@
-.comm-button{
+.comm-button {
     background-color: '#F1EFEF';
     border-radius: '12px';
     border: 'none';
@@ -8,4 +8,17 @@
     margin-top: '15px';
     margin-bottom: '10px';
 
+}
+
+::-webkit-scrollbar {
+    width: 0px;
+}
+
+::-webkit-scrollbar-thumb {
+    background: rgba(136, 136, 136, 0.281);
+}
+
+/* Handle on hover */
+::-webkit-scrollbar-thumb:hover {
+    background: #555;
 }
