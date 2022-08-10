@@ -3,7 +3,7 @@ import axios from "axios";
 
 import { ChatState } from "../../../Context/ChatProvider";
 import ChatLoading from "./ChatLoading";
-import { getSender, getPic } from '../../../Config/ChatLogics'
+import { getSender, getPic , getStatus} from '../../../Config/ChatLogics'
 import '../../../App.css';
 import '../Homepage.css'
 import ChatHeader from '../../../Assests/Common/ChatHeader';
@@ -38,6 +38,7 @@ const MyChats = ({ fetchAgain }) => {
 
             const { data } = await axios.get("/api/chat", config);
             setChats(data);
+            //console.log(data)
         } catch (error) {
             toast({
                 title: "Error Occured!",
@@ -50,13 +51,12 @@ const MyChats = ({ fetchAgain }) => {
         }
 
     };
+
     useEffect(() => {
         setLoggedUser(JSON.parse(localStorage.getItem("userInfo")));
         fetchChats();
-
+        //console.log(test)
     }, [fetchAgain]);
-
-
 
 
     return (
@@ -174,10 +174,13 @@ const MyChats = ({ fetchAgain }) => {
                                                 >
                                                     <Text>
                                                         <IconButton sx={{ p: 1 }}>
-                                                            <Avatar
-                                                                sx={{ width: 30, height: 30 }}
-                                                                alt={chat.chatName} src={getPic(loggedUser, chat.users)}
+                                                            <img
+                                                                className="member-status-img"
+                                                                //sx={{ width: 30, height: 30 }}
+                                                                //alt={chat.chatName} 
+                                                                src={getPic(loggedUser, chat.users)}
                                                             />
+                                                             { getStatus(loggedUser, chat.users) == "online" ? <i className="fas fa-circle sidebar-online-status"></i> : <i className="fas fa-circle sidebar-offline-status"></i>}
                                                         </IconButton>
                                                         {getSender(loggedUser, chat.users)}
                                                     </Text>

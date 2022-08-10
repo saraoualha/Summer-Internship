@@ -133,7 +133,7 @@ const GroupChatModal = ({ children }) => {
         <ChakraProvider>
             <span onClick={onOpen}>{children}</span>
 
-            <Modal onClose={onClose} isOpen={isOpen} isCentered>
+            <Modal onClose={onClose} isOpen={isOpen} isCentered >
                 <ModalOverlay />
                 <ModalContent>
                     <ModalHeader

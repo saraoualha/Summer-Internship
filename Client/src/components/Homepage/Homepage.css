@@ -47,3 +47,29 @@ div.scroll {
     text-align:justify;
 }
 
+.member-status-img {
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    object-fit: cover;
+}
+.member-status {
+    margin-bottom: 0;
+    position: relative;
+}
+.sidebar-online-status {
+    color: green;
+}
+.sidebar-offline-status {
+    color: red;
+}
+.sidebar-offline-status,
+.sidebar-online-status {
+    font-size: 11px;
+    position:relative;
+    z-index: 99;
+    bottom: 6px;
+    left: -2px;
+    
+}
+

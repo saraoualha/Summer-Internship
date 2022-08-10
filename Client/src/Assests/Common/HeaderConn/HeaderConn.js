@@ -1,5 +1,8 @@
 import * as React from 'react';
 import { Link } from 'react-router-dom'
+import axios from "axios";
+import Modal from 'react-modal';
+
 import AppBar from '@mui/material/AppBar';
 import Box from '@mui/material/Box';
 import Toolbar from '@mui/material/Toolbar';
@@ -10,32 +13,20 @@ import Container from '@mui/material/Container';
 import MenuItem from '@mui/material/MenuItem';
 import Avatar from '@mui/material/Avatar';
 import Tooltip from '@mui/material/Tooltip';
-import NotificationsIcon from '@mui/icons-material/Notifications';
-import Badge from '@mui/material/Badge';
-import { styled, alpha } from '@mui/material/styles';
-import InputBase from '@mui/material/InputBase';
-import NotificationBadge from "react-notification-badge";
-import { Effect } from "react-notification-badge";
-
-
-import {
-    MenuButton,
-    MenuDivider,
-    MenuList,
-} from "@chakra-ui/menu";
-import { BellIcon, ChevronDownIcon } from "@chakra-ui/icons";
+import { useToast} from "@chakra-ui/react";
 
 
 import './HeaderConn.css';
 import { ChatState } from '../../../Context/ChatProvider';
-import ProfileModel from '../../../components/ProfileModel/ProfileModel';
+import ProfileModel from '../../../components/Homepage/ProfileModel/ProfileModel';
 
 import logo from '../../logo.png'
 import SideBar from '../../../components/Homepage/ChatCompo/SideBar';
-import NotificationModel from './NotificationModel'
 
+Modal.setAppElement('#root')
 
 const HeaderConn = () => {
+    const toast = useToast();
     /************************************************************************* */
     const [anchorElNav, setAnchorElNav] = React.useState(null);
     const [anchorElUser, setAnchorElUser] = React.useState(null);
@@ -61,6 +52,36 @@ const HeaderConn = () => {
     const [loadingChat, setLoadingChat] = React.useState();
     const { user, notification, setNotification, setSelectedChat } = ChatState();
     const userInfo = JSON.parse(localStorage.getItem("userInfo"));
+    let val=localStorage.getItem('UserId');
+    let id=  val.substr(1,val.length-2)
+
+    const logout = async () => {
+
+        try {
+            const config = {
+                headers: {
+                    Authorization: `Bearer ${user.token}`,
+                    "Content-type": "application/json",
+                },
+            };
+            const { data } = await axios.put(
+                `/api/user/logout`,
+                {
+                    userId: userInfo._id,
+                },
+                config
+            );
+        } catch (error) {
+            toast({
+                title: "Error Occured!",
+                description: error.response.data.message,
+                status: "error",
+                duration: 5000,
+                isClosable: true,
+                position: "bottom",
+            });
+        }
+    }
 
 
 
@@ -80,6 +101,7 @@ const HeaderConn = () => {
                         alt="CU"
                         src={logo}
                     />
+                    <Link to={`/homepage/${id}`}>
                     <Typography
                         variant="h6"
                         noWrap
@@ -97,6 +119,7 @@ const HeaderConn = () => {
                     >
                         ChatUp
                     </Typography>
+                    </Link>
                     <Box sx={{ flexGrow: 1, display: { xs: 'flex', md: 'none' } }}>
                         <IconButton
                             size="large"
@@ -145,7 +168,6 @@ const HeaderConn = () => {
                             color: 'inherit',
                             textDecoration: 'none',
                         }}
-
                     >
                         ChatUp
                     </Typography>
@@ -154,15 +176,6 @@ const HeaderConn = () => {
                     <Box sx={{ flexGrow: 0 }}>
 
                         <SideBar />
-                        {/* <NotificationModel>
-                            <NotificationBadge
-                                count={notification.length}
-                                effect={Effect.SCALE}
-                            />
-                            <BellIcon fontSize="2xl" m={1} />
-                        </NotificationModel> */}
-
-
                         <Tooltip title='Click for settings '>
                             <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
                                 <Avatar alt={userInfo.name} src={userInfo.pic} />
@@ -193,9 +206,9 @@ const HeaderConn = () => {
                                 <Link className='link' to={`/`}><Typography textAlign="center">VideoCall</Typography></Link>
                             </MenuItem>
                             <MenuItem onClick={handleCloseUserMenu}>
-                                <Link className='link' to={`/`}><Typography textAlign="center">Plan Event</Typography></Link>
+                                <Link className='link' to={`/Calendar`}><Typography textAlign="center">Plan Event</Typography></Link>
                             </MenuItem>
-                            <MenuItem onClick={(e) => { handleCloseUserMenu(); localStorage.clear() }}>
+                            <MenuItem onClick={(e) => { handleCloseUserMenu(); localStorage.clear(); logout()}}>
                                 <Link className='link' to={`/`}><Typography textAlign="center">Logout</Typography></Link>
                             </MenuItem>
                         </Menu>

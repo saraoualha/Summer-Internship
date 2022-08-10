@@ -1,8 +1,10 @@
 import React, { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+
 import CommHeader from '../../Assests/Common/CommHeader';
 import './Main.css'
 import Login from '../login/Login';
+import { ChatState } from "../../Context/ChatProvider";
 
 import CssBaseline from '@mui/material/CssBaseline';
 import Paper from '@mui/material/Paper';
@@ -18,7 +20,7 @@ const theme = createTheme();
 const Main = () => {
 
     const navigate = useNavigate();
-    
+    //const { user } = ChatState();
     useEffect(() => {
         const user = localStorage.getItem('userInfo');
 
@@ -31,6 +33,7 @@ const Main = () => {
         <div>
             <div>
                 <CommHeader />
+
             </div>
             <ThemeProvider theme={theme}>
                 <Grid container component="main" sx={{ height: '100vh' }} >
@@ -74,9 +77,7 @@ const Main = () => {
                                             }}
                                         >
                                             <div>
-
                                                 <Login />
-
                                             </div>
                                         </Box>
                                     </Container>

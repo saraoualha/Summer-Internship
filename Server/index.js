@@ -1,7 +1,7 @@
 const userRoutes = require("./routes/userRoutes");
 const chatRoutes = require("./routes/chatRoutes")
 const messageRoutes = require("./routes/messageRoutes")
-
+const eventRoutes= require("./routes/eventRoutes");
 const express = require('express');
 const dotenv = require('dotenv');
 const bodyParser = require('body-parser');
@@ -72,6 +72,7 @@ io.on("connection", (socket) => {
 app.use('/api/user', userRoutes)
 app.use('/api/chat', chatRoutes)
 app.use('/api/message', messageRoutes)
+app.use('/api/events', eventRoutes)
 
 app.use(notFound)
 app.use(errorHandler)

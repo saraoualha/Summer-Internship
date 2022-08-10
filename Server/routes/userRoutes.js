@@ -2,12 +2,13 @@
 const express= require('express');
 
 //import {registerUser}from "../controllers/userControllers.jsexpr";
-const {registerUser , authUser, allUsers}= require('../controllers/userControllers')
+const {registerUser ,logoutUser, authUser, allUsers}= require('../controllers/userControllers')
 const {protect}= require("../middlewares/authMiddleware")
 
 const router=express.Router()
 
 router.route('/').post(registerUser).get(protect,allUsers)
+router.route('/logout').put(protect,logoutUser )
 router.post('/login',authUser)
 
 

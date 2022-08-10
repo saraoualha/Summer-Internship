@@ -4,7 +4,7 @@ import io from "socket.io-client";
 
 import { ChatState } from '../../../Context/ChatProvider';
 import { getSender, getSenderFull } from '../../../Config/ChatLogics';
-import ProfileModel from '../../ProfileModel/ProfileModel';
+import ProfileModel from '../ProfileModel/ProfileModel';
 import UpdateGroupChatModal from './UpdateGroupChatModal';
 import '../Homepage.css';
 import ScrollableChat from './ScrollableChat';

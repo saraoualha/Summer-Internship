@@ -1,0 +1,10 @@
+.popup {
+    display: flex;
+    flex-direction: column-reverse;
+    overflow-y: scroll;
+    scrollbar-width: none;
+    height:100px;
+    overflow-x:hidden; 
+    overflow-y:auto;
+    
+}

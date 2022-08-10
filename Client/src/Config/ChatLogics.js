@@ -2,6 +2,10 @@ export const getSender=(loggedUser, users)=>{
     return users[0]._id== loggedUser._id ? users[1].name: users[0].name
 }
 
+export const getStatus=(loggedUser, users)=>{
+  return users[0]._id== loggedUser._id ? users[1].status: users[0].status
+}
+
 export const getPic=(loggedUser, users)=>{
   if (users[0]._id== loggedUser._id){
     return users[1].pic

@@ -115,10 +115,11 @@ const SideBar = () => {
                             <Input
                                 placeholder="Search by name or email"
                                 mr={2}
+                                w= '75%'
                                 value={search}
                                 onChange={(e) => setSearch(e.target.value)}
                             />
-                            <Button style={{marginLeft: '240px'}} onClick={handleSearch}>Go</Button>
+                            <Button style={{position: 'relative' }} onClick={handleSearch}>Go</Button>
                         </Box>
                         {loading ? (
                             <ChatLoading />
