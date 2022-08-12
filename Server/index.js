@@ -12,6 +12,52 @@ const { notFound, errorHandler } = require('./middlewares/errorMiddleware')
 const app = express();
 dotenv.config();
 
+/*  Video Chat fonctionality   */
+const serv= require('http').Server(app)
+const ioV = require('socket.io')(serv,{
+    cors: {
+        origin: "http://localhost:3030",
+        methods: ["GET", "POST"],
+        transports: ['websocket', 'polling'],
+        credentials: true
+    },
+    allowEIO3: true
+})
+
+const {v4: uuidv4}= require('uuid')
+const { ExpressPeerServer } = require('peer');
+const peerServer = ExpressPeerServer(serv, {
+  debug: true
+});
+
+
+
+app.set('view engine', 'ejs')
+app.use(express.static('public'))
+
+app.use('/peerjs', peerServer);
+
+app.get('/',(req,res)=>{
+    res.redirect(`/videoChat/${uuidv4()}`)
+})
+
+app.get('/videoChat/:room', (req, res)=>{
+    res.render('room', {roomId: req.params.room})
+})
+
+ioV.on('connection', socket => {
+    socket.on('join-room', (roomId, userId)=>{
+        socket.join(roomId)
+        socket.to(roomId).emit('user-connected', userId);  //.broadcast.emit('user-connected');
+        socket.on('message', message=>{
+            ioV.to(roomId).emit('createMessage', message)
+        })
+    })
+})
+serv.listen(3030);
+
+/*   *************************  */
+
 app.use(bodyParser.json({ limit: "30mb", extended: true }));
 app.use(bodyParser.urlencoded({ limit: "30mb", extended: true }));
 app.use(cors());
