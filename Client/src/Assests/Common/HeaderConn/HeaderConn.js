@@ -46,11 +46,7 @@ const HeaderConn = () => {
         setAnchorElUser(null);
     };
     /*************************************************************************** */
-
-    const [search, setSearch] = React.useState('');
-    const [searchResult, setSearchResault] = React.useState([]);
-    const [loadingChat, setLoadingChat] = React.useState();
-    const { user, notification, setNotification, setSelectedChat } = ChatState();
+    const { user} = ChatState();
     const userInfo = JSON.parse(localStorage.getItem("userInfo"));
     let val=localStorage.getItem('UserId');
     let id=  val.substr(1,val.length-2)
@@ -203,7 +199,7 @@ const HeaderConn = () => {
                                 </MenuItem>
                             </ProfileModel>
                             <MenuItem onClick={handleCloseUserMenu}>
-                                <Link className='link' to={`/`}><Typography textAlign="center">VideoCall</Typography></Link>
+                                <a target="_blank" href="http://localhost:3030/"><Typography textAlign="center">VideoCall</Typography></a>
                             </MenuItem>
                             <MenuItem onClick={handleCloseUserMenu}>
                                 <Link className='link' to={`/Calendar`}><Typography textAlign="center">Plan Event</Typography></Link>

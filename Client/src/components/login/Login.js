@@ -1,24 +1,17 @@
 import * as React from 'react';
 import './Login.css'
 import { Link } from 'react-router-dom'
-import CssBaseline from '@mui/material/CssBaseline';
-import TextField from '@mui/material/TextField';
 import Grid from '@mui/material/Grid';
 import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
-import Container from '@mui/material/Container';
-import { createTheme, ThemeProvider } from '@mui/material/styles';
-import CommHeader from '../../Assests/Common/CommHeader';
+import { createTheme } from '@mui/material/styles';
 
 import { FormLabel } from "@chakra-ui/form-control";
 
 import axios from "axios";
 import { useToast } from "@chakra-ui/react";
-//import { useHistory } from "react-router-dom";
 import { useNavigate } from 'react-router-dom';
-import { ChakraProvider } from '@chakra-ui/react';
 
-const theme = createTheme();
 
 export default function Login() {
     const [email, setEmail] = React.useState()

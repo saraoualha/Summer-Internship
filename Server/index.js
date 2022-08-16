@@ -1,7 +1,7 @@
 const userRoutes = require("./routes/userRoutes");
 const chatRoutes = require("./routes/chatRoutes")
 const messageRoutes = require("./routes/messageRoutes")
-const eventRoutes= require("./routes/eventRoutes");
+const eventRoutes = require("./routes/eventRoutes");
 const express = require('express');
 const dotenv = require('dotenv');
 const bodyParser = require('body-parser');
@@ -13,49 +13,60 @@ const app = express();
 dotenv.config();
 
 /*  Video Chat fonctionality   */
-const serv= require('http').Server(app)
-const ioV = require('socket.io')(serv,{
-    cors: {
-        origin: "http://localhost:3030",
-        methods: ["GET", "POST"],
-        transports: ['websocket', 'polling'],
-        credentials: true
-    },
-    allowEIO3: true
-})
+const serv = require("http").Server(app);
+const { v4: uuidv4 } = require("uuid");
+const ioV = require("socket.io")(serv);
+const { ExpressPeerServer } = require("peer");
+const url = require("url");
+const peerServer = ExpressPeerServer(serv, { 
+    debug: true,
+});
+const path = require("path");
+app.set("view engine", "ejs");
+app.use("/public", express.static(path.join(__dirname, "static")));
+app.use("/peerjs", peerServer);
 
-const {v4: uuidv4}= require('uuid')
-const { ExpressPeerServer } = require('peer');
-const peerServer = ExpressPeerServer(serv, {
-  debug: true
+app.get("/", (req, res) => {
+    res.sendFile(path.join(__dirname, "static", "index.html"));
 });
 
-
-
-app.set('view engine', 'ejs')
-app.use(express.static('public'))
-
-app.use('/peerjs', peerServer);
-
-app.get('/',(req,res)=>{
-    res.redirect(`/videoChat/${uuidv4()}`)
-})
-
-app.get('/videoChat/:room', (req, res)=>{
-    res.render('room', {roomId: req.params.room})
-})
-
-ioV.on('connection', socket => {
-    socket.on('join-room', (roomId, userId)=>{
-        socket.join(roomId)
-        socket.to(roomId).emit('user-connected', userId);  //.broadcast.emit('user-connected');
-        socket.on('message', message=>{
-            ioV.to(roomId).emit('createMessage', message)
+app.get("/join", (req, res) => { 
+    res.redirect( 
+        url.format({ 
+            pathname: `/join/${uuidv4()}`, 
+            query: req.query, 
         })
-    })
-})
-serv.listen(3030);
+    );
+});
 
+app.get("/joinold", (req, res) => { 
+    res.redirect(
+        url.format({
+            pathname: req.query.meeting_id,
+            query: req.query,
+        })
+    );
+});
+
+app.get("/join/:rooms", (req, res) => { 
+    res.render("room", { roomid: req.params.rooms, Myname: req.query.name });
+});
+
+ioV.on("connection", (socket) => {
+    socket.on("join-room", (roomId, id, myname) => { 
+        socket.join(roomId);
+        socket.to(roomId).emit("user-connected", id, myname);
+
+        socket.on("messagesend", (message) => { 
+            ioV.to(roomId).emit("createMessage", message);
+        });
+
+        socket.on("tellName", (myname) => {
+            socket.to(roomId).emit("AddName", myname);
+        });
+    })
+});
+serv.listen(3030);
 /*   *************************  */
 
 app.use(bodyParser.json({ limit: "30mb", extended: true }));
@@ -110,7 +121,7 @@ io.on("connection", (socket) => {
     });
     const users = {};
 
-    
+
 });
 
 
