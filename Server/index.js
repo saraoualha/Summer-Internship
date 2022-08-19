@@ -64,6 +64,9 @@ ioV.on("connection", (socket) => {
         socket.on("tellName", (myname) => {
             socket.to(roomId).emit("AddName", myname);
         });
+        socket.on('display-media', (value) => {
+            socket.to(roomId).emit('display-media', {userId, value });
+        });
     })
 });
 serv.listen(3030);
@@ -118,6 +121,9 @@ io.on("connection", (socket) => {
     socket.off("setup", () => {
         console.log("USER DISCONNECTED");
         socket.leave(userData._id);
+    });
+    socket.on("disconnect", () => {
+        socket.to(roomId).broadcast.emit("user-disconnected", id);
     });
     const users = {};
 

@@ -11,27 +11,44 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/peerjs/1.3.1/peerjs.min.js.map"></script>
     <script src="/socket.io/socket.io.js"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.13.0/css/all.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
-    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
+        integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"
+        integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN"
+        crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"
+        integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q"
+        crossorigin="anonymous"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"
+        integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl"
+        crossorigin="anonymous"></script>
     <script src="/socket.io/socket.io.js"></script>
 
     <script>
         const myname = "<%= Myname %>"
         const roomId = "<%= roomid %>"
     </script>
+
+    <script type="text/javascript"> 
+        function resizeVideo() {
+            console.log('in')
+            document.getElement('video').style.transform = 'scale(0.75)';
+        }
+    </script>
 </head>
 
 <body>
-    <div class="modal fade" id="getCodeModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal fade" id="getCodeModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
+        aria-hidden="true">
         <div class="modal-dialog modal-sm">
             <div class="modal-content">
                 <div class="modal-header">
                     <h4 class="modal-title">Invite People</h4>
                 </div>
                 <div class="modal-body">
-                    <p id="roomid"><strong><%= roomid %></p>
+                    <p id="roomid"><strong>
+                            <%= roomid %>
+                    </p>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-white" onclick="cancel()">Close</button>
@@ -42,7 +59,7 @@
     </div>
     <div class="mainclone">
         <div class="main_left">
-            <div class="main_videos">
+            <div class="main_videos" id="entry-modal">
                 <div id="video-grids">
                 </div>
             </div>
@@ -62,7 +79,7 @@
                         <i class="fas fa-user-plus"></i>
                         <span>Invite</span>
                     </div>
-                    <div class="main_controls_button">
+                    <div class="main_controls_button main__share_button" id="share-button" onclick="screenShare()">
                         <i class="fas fa-presentation-screen"></i>
                         <span>Share screen</span>
                     </div>
@@ -72,6 +89,9 @@
                     </div>
                 </div>
                 <div class="main_controls_block">
+                    <div class="main_controls_button">
+                        <span class="record-button .main__record_button" onclick="recordScreen()">Start Recording</span>
+                    </div>
                     <div class="main_controls_button leave_red">
                         <span class="leave_meeting"><a href="/">Leave Meeting</a></span>
                     </div>
@@ -89,7 +109,8 @@
             </div>
             <div>
                 <div class="main__message_container">
-                    <input type="text" id="chat_message" onkeydown="sendmessage(this)" placeholder="Type message here.." />
+                    <input type="text" id="chat_message" onkeydown="sendmessage(this)"
+                        placeholder="Type message here.." />
                 </div>
             </div>
         </div>

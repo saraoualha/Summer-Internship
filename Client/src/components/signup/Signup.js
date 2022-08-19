@@ -19,22 +19,16 @@ import { ChakraProvider } from '@chakra-ui/react';
 
 const theme = createTheme();
 
-
-//https://api.cloudinary.com/v1_1/dw7pjrhte/image/upload
-
-
 export default function Signup() {
     const [name, setName] = React.useState()
     const [email, setEmail] = React.useState()
     const [password, setPassword] = React.useState()
     const [confirmpassword, setConfirmpassword] = React.useState()
     const [pic, setPic] = React.useState()
-    //const [loading, setLoading] = React.useState(false)
     const toast = useToast();
     const navigate = useNavigate();
 
     const postDetails = (pics) => {
-        //setLoading(true);
         if (pics === undefined) {
             toast({
                 title: "Please Select an Image!",
@@ -57,11 +51,9 @@ export default function Signup() {
                 .then((data) => {
                     setPic(data.url.toString());
                     console.log(data.url.toString());
-                    //setLoading(false);
                 })
                 .catch((err) => {
                     console.log(err);
-                    //setLoading(false);
                 });
         } else {
             toast({
@@ -71,13 +63,11 @@ export default function Signup() {
                 isClosable: true,
                 position: "top",
             });
-            //setLoading(false);
             return;
         }
     };
 
     const submitHandler = async () => {
-        //setPicLoading(true);
         if (!name || !email || !password || !confirmpassword) {
             console.log('Please Fill all the Fileds')
             toast({
@@ -87,7 +77,6 @@ export default function Signup() {
                 isClosable: true,
                 position: "top",
             });
-            //setPicLoading(false);
             return;
 
         }

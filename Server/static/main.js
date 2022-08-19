@@ -6,9 +6,10 @@ const chat = document.getElementById("chat");
 OtherUsername = "";
 chat.hidden = true;
 myVideo.muted = true;
+var currentPeer = null
 
 window.onload = () => {
-    $(document).ready(function() {
+    $(document).ready(function () {
         $("#getCodeModal").modal("show");
     });
 };
@@ -27,7 +28,7 @@ var getUserMedia =
     navigator.mozGetUserMedia;
 
 sendmessage = (text) => {
-    
+
     if (event.key === "Enter" && text.value != "") {
         socket.emit("messagesend", myname + ' : ' + text.value);
         text.value = "";
@@ -50,19 +51,23 @@ navigator.mediaDevices
         });
 
         socket.on("user-disconnected", (id) => {
+            console.log('in user disconnected')
+            console.log(id + "disconnected")
+            RemoveUnusedDivs()
             if (peers[id]) peers[id].close();
         });
     });
 peer.on("call", (call) => {
     getUserMedia({ video: true, audio: true },
-        function(stream) {
+        function (stream) {
             call.answer(stream); // Answer the call with an A/V stream.
             const video = document.createElement("video");
-            call.on("stream", function(remoteStream) {
+            call.on("stream", function (remoteStream) {
                 addVideoStream(video, remoteStream, OtherUsername);
             });
+            currentPeer = call;
         },
-        function(err) {
+        function (err) {
             console.log("Failed to get local stream", err);
         }
     );
@@ -73,7 +78,6 @@ peer.on("open", (id) => {
 });
 
 socket.on("createMessage", (message) => {
-    console.log('west create msg')
     var ul = document.getElementById("messageadd");
     var li = document.createElement("li");
     li.className = "message";
@@ -86,7 +90,6 @@ socket.on("AddName", (username) => {
 });
 
 const RemoveUnusedDivs = () => {
-    
     alldivs = videoGrids.getElementsByTagName("div");
     for (var i = 0; i < alldivs.length; i++) {
         e = alldivs[i].getElementsByTagName("video").length;
@@ -104,16 +107,19 @@ const connectToNewUser = (userId, streams, myname) => {
     });
     call.on("close", () => {
         video.remove();
+        console.log('in rmv divs')
         RemoveUnusedDivs();
     });
     peers[userId] = call;
+    currentPeer = call;
+
 };
 
 const cancel = () => {
     $("#getCodeModal").modal("hide");
 };
 
-const copy = async() => {
+const copy = async () => {
     const roomid = document.getElementById("roomid").innerText;
     await navigator.clipboard.writeText("http://localhost:3030/join/" + roomid);
 };
@@ -220,3 +226,63 @@ const addVideoStream = (videoEl, stream, name) => {
         }
     }
 };
+
+
+/* Screen Record */
+
+/* ************* */
+/* screen share */
+var screenSharing = false;
+
+const setShareScreen = () => {
+    const html = `
+      <span>Share Screen</span>
+    `
+    document.querySelector('.main__share_button').innerHTML = html;
+}
+
+const setStopShareScreen = () => {
+    const html = `
+      <span>Stop Sharing</span>
+    `
+    document.querySelector('.main__share_button').innerHTML = html;
+}
+const screenShare = () => {
+    console.log(screenSharing)
+    if (!screenSharing) {
+        navigator.mediaDevices.getDisplayMedia({ video: true }).then((stream) => {
+            screenStream = stream;
+            let videoTrack = screenStream.getVideoTracks()[0];
+            videoTrack.onended = () => {
+                stopScreenSharing()
+            }
+            setStopShareScreen()
+            if (peer) {
+                let sender = currentPeer.peerConnection.getSenders().find(function (s) {
+                    return s.track.kind == videoTrack.kind;
+                })
+                sender.replaceTrack(videoTrack)
+                screenSharing = true
+                console.log("in sharing: " + screenSharing)
+            }
+            console.log("after sharing: " + screenSharing)
+        })
+    }
+
+    if (screenSharing) {
+        let videoTrack = myVideoStream.getVideoTracks()[0];
+        setShareScreen()
+        if (peer) {
+            let sender = currentPeer.peerConnection.getSenders().find(function (s) {
+                return s.track.kind == videoTrack.kind;
+            })
+            sender.replaceTrack(videoTrack)
+        }
+        screenStream.getTracks().forEach(function (track) {
+            track.stop();
+        });
+        screenSharing = false
+    }
+
+}
+/* ************ */
